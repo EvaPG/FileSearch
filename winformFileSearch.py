@@ -24,11 +24,12 @@ checkbuttonFiltTypeObj=[]
 checkbuttonFiltTypeVar=[]
 searchFileTypes=[]
 Thread=[]
+allTkinterObj=[]
 strExportSearchResultPath=''
 
 def selectSearchPath():
     strSearchPath.set(filedialog.askdirectory())
-    # print(strSearchPath.get().lstrip())
+
 def selectSearchMatch():
     global intSearchMatch
     if (intMatchFileName.get() == 1) & (intMatchFileContent.get() == 1):
@@ -92,6 +93,11 @@ def startSearch():
     oldSearchResult = treeviewSearchResult.get_children()
     for row in oldSearchResult:
         treeviewSearchResult.delete(row)
+    for tkObj in allTkinterObj:
+        tkObj.config(state='disabled')
+    if intIsAllFiles==0:
+        for cbObj in checkbuttonFiltTypeObj:
+            cbObj.config(state='disabled')
     create_thread(searchMain,'')
 
 
@@ -103,6 +109,11 @@ def stopSearch():
     buttonStopSearch.config(state='disabled')
     if len(treeviewSearchResult.get_children())>0:
         buttonExportSearchResult.config(state='normal')
+    for tkObj in allTkinterObj:
+        tkObj.config(state='normal')
+    if intIsAllFiles == 0:
+        for cbObj in checkbuttonFiltTypeObj:
+            cbObj.config(state='normal')
     if os.path.exists(temp_path):
         shutil.rmtree(temp_path)
 
@@ -143,8 +154,8 @@ def searchMain():
         shutil.rmtree(temp_path)
     buttonStartSearch.config(state='normal')
     buttonStopSearch.config(state='disabled')
-    buttonExportSearchResult.config(state='normal')
-
+    if len(treeviewSearchResult.get_children())>0:
+        buttonExportSearchResult.config(state='normal')
 
 def findByFileName(root,file,filename):
     if strSearchContent.get().lstrip() in filename:
@@ -215,7 +226,7 @@ def stop_thread(thread):
     _async_raise(thread.ident, SystemExit)
 
 windows = tk.Tk()
-windows.title('文件搜索工具测试版Version 1.2 By:HeJunjie 2018/08/24')
+windows.title('文件搜索工具测试版Version 1.3 By:HeJunjie 2018/08/24')
 windows.resizable(width=False,height=False)
 screenWidth = windows.winfo_screenwidth()
 screenHeight = windows.winfo_screenheight()
@@ -228,16 +239,26 @@ windows.geometry("%dx%d+%d+%d" %(windowsWidth,windowsHeight,x,y))
 frameBasic = tk.Frame(windows)
 tk.Label(frameBasic,text='搜索路径:').grid(row=0,column=0)
 strSearchPath = tk.StringVar()
-tk.Entry(frameBasic,textvariable=strSearchPath,width=50).grid(row=0,column=1,padx=5)
-tk.Button(frameBasic,text='选择搜索路径',command=selectSearchPath).grid(row=0,column=2,columnspan=2,sticky='w')
+entrySearchPath = tk.Entry(frameBasic,textvariable=strSearchPath,width=50)
+allTkinterObj.append(entrySearchPath)
+entrySearchPath.grid(row=0,column=1,padx=5)
+buttonSearchPath = tk.Button(frameBasic,text='选择搜索路径',command=selectSearchPath)
+allTkinterObj.append(buttonSearchPath)
+buttonSearchPath.grid(row=0,column=2,columnspan=2,sticky='w')
 
 tk.Label(frameBasic,text='搜索内容:').grid(row=1,column=0)
 strSearchContent = tk.StringVar()
-tk.Entry(frameBasic,textvariable=strSearchContent,width=50).grid(row=1,column=1,padx=5)
+entrySearchContent = tk.Entry(frameBasic,textvariable=strSearchContent,width=50)
+allTkinterObj.append(entrySearchContent)
+entrySearchContent.grid(row=1,column=1,padx=5)
 intMatchFileName=tk.IntVar()
-tk.Checkbutton(frameBasic,text='文件名',variable=intMatchFileName,onvalue=1,offvalue=0,command=selectSearchMatch).grid(row=1,column=2)
+checkbuttonMatchFileName = tk.Checkbutton(frameBasic,text='文件名',variable=intMatchFileName,onvalue=1,offvalue=0,command=selectSearchMatch)
+allTkinterObj.append(checkbuttonMatchFileName)
+checkbuttonMatchFileName.grid(row=1,column=2)
 intMatchFileContent=tk.IntVar()
-tk.Checkbutton(frameBasic,text='文件内容',variable=intMatchFileContent,onvalue=1,offvalue=0,command=selectSearchMatch).grid(row=1,column=3)
+checkbuttonMatchFileContent = tk.Checkbutton(frameBasic,text='文件内容',variable=intMatchFileContent,onvalue=1,offvalue=0,command=selectSearchMatch)
+allTkinterObj.append(checkbuttonMatchFileContent)
+checkbuttonMatchFileContent.grid(row=1,column=3)
 tk.Label(frameBasic,text='(文件内容搜索目前只支持txt,doc,docx,xls,xlsx)').grid(row=2,column=0,columnspan=4,sticky='e')
 frameBasic.grid(row=0,column=0,padx=10,pady=10)
 
@@ -246,11 +267,13 @@ frameFileType = tk.LabelFrame(windows,text='文件类型')
 tk.Label(frameFileType,text='所有类型:').grid(row=0,column=0,sticky='e')
 intAllFiles = tk.IntVar()
 checkbuttonAllFiles = tk.Checkbutton(frameFileType, text='(本机所有文件)', variable=intAllFiles,onvalue=1, offvalue=0,command=selectAllFiles)
+allTkinterObj.append(checkbuttonAllFiles)
 checkbuttonAllFiles.grid(row=0,column=1,columnspan=10,sticky='w')
 
 tk.Label(frameFileType,text='指定类型:').grid(row=2,column=0)
 intAllTypes = tk.IntVar()
 checkbuttonAllTypes=tk.Checkbutton(frameFileType, text='全选', variable=intAllTypes,onvalue=1, offvalue=0,command=selectAllTypes)
+allTkinterObj.append(checkbuttonAllTypes)
 checkbuttonAllTypes.grid(row=2,column=1,columnspan=10,sticky='w')
 _initFileTypePanel()
 
