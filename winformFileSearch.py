@@ -86,7 +86,6 @@ def startSearch():
     if(intIsAllFiles ==0 and len(searchFileTypes)==0):
         messagebox.askokcancel('提醒', "请选择文件类型！")
         return
-
     buttonStartSearch.config(state='disabled')
     buttonStopSearch.config(state='normal')
     buttonExportSearchResult.config(state='disabled')
@@ -96,6 +95,7 @@ def startSearch():
     for tkObj in allTkinterObj:
         tkObj.config(state='disabled')
     if intIsAllFiles==0:
+        checkbuttonAllTypes.config(state='disabled')
         for cbObj in checkbuttonFiltTypeObj:
             cbObj.config(state='disabled')
     create_thread(searchMain,'')
@@ -112,6 +112,7 @@ def stopSearch():
     for tkObj in allTkinterObj:
         tkObj.config(state='normal')
     if intIsAllFiles == 0:
+        checkbuttonAllTypes.config(state='normal')
         for cbObj in checkbuttonFiltTypeObj:
             cbObj.config(state='normal')
     if os.path.exists(temp_path):
@@ -159,6 +160,7 @@ def searchMain():
     for tkObj in allTkinterObj:
         tkObj.config(state='normal')
     if intIsAllFiles == 0:
+        checkbuttonAllTypes.config(state='normal')
         for cbObj in checkbuttonFiltTypeObj:
             cbObj.config(state='normal')
 
@@ -278,7 +280,6 @@ checkbuttonAllFiles.grid(row=0,column=1,columnspan=10,sticky='w')
 tk.Label(frameFileType,text='指定类型:').grid(row=2,column=0)
 intAllTypes = tk.IntVar()
 checkbuttonAllTypes=tk.Checkbutton(frameFileType, text='全选', variable=intAllTypes,onvalue=1, offvalue=0,command=selectAllTypes)
-allTkinterObj.append(checkbuttonAllTypes)
 checkbuttonAllTypes.grid(row=2,column=1,columnspan=10,sticky='w')
 _initFileTypePanel()
 
