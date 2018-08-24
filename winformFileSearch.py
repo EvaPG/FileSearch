@@ -156,6 +156,11 @@ def searchMain():
     buttonStopSearch.config(state='disabled')
     if len(treeviewSearchResult.get_children())>0:
         buttonExportSearchResult.config(state='normal')
+    for tkObj in allTkinterObj:
+        tkObj.config(state='normal')
+    if intIsAllFiles == 0:
+        for cbObj in checkbuttonFiltTypeObj:
+            cbObj.config(state='normal')
 
 def findByFileName(root,file,filename):
     if strSearchContent.get().lstrip() in filename:
