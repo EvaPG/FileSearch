@@ -100,6 +100,9 @@ def stopSearch():
         for t in Thread:
             stop_thread(t)
     buttonStartSearch.config(state='normal')
+    buttonStopSearch.config(state='disabled')
+    if len(treeviewSearchResult.get_children())>0:
+        buttonExportSearchResult.config(state='normal')
     if os.path.exists(temp_path):
         shutil.rmtree(temp_path)
 
@@ -212,7 +215,7 @@ def stop_thread(thread):
     _async_raise(thread.ident, SystemExit)
 
 windows = tk.Tk()
-windows.title('文件搜索工具测试版Version 1.1 By:HeJunjie 2018/08/24')
+windows.title('文件搜索工具测试版Version 1.2 By:HeJunjie 2018/08/24')
 windows.resizable(width=False,height=False)
 screenWidth = windows.winfo_screenwidth()
 screenHeight = windows.winfo_screenheight()
